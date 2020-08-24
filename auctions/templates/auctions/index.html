@@ -1,0 +1,30 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <div class="container">
+
+        <h2>Active Listings</h2>
+        {% for listing in listings %}
+            <div class="card mb-3" style="max-height: 300px;">
+                <div class="row no-gutters">
+                    <div>
+                    <img src="{{ listing.image_url }}" class="card-img" alt="Image of Listing" style="max-height: 300px; width:auto">
+                    </div>
+                    <div class="col">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ listing.title }}</h4>
+                        <h5>Current Bid: <span class="badge badge-info">${{ listing.current_bid }}</span></h5>
+                        <p class="card-text">{{ listing.description }}</p>
+                        <br><br>
+                        <a href="" class="btn btn-primary">View Listing</a>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+            
+        
+    
+    </div>
+{% endblock %}
