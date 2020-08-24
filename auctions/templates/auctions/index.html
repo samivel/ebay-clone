@@ -14,10 +14,10 @@
                     <div class="col">
                     <div class="card-body">
                         <h4 class="card-title">{{ listing.title }}</h4>
-                        <h5>Current Bid: <span class="badge badge-info">${{ listing.current_bid }}</span></h5>
+                        <h5>Current Bid: <span class="badge badge-info">${{ listing.current_bid|floatformat:2 }}</span></h5>
                         <p class="card-text">{{ listing.description }}</p>
                         <br><br>
-                        <a href="" class="btn btn-primary">View Listing</a>
+                        <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View Listing</a>
                     </div>
                     </div>
                 </div>

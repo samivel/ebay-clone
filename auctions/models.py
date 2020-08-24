@@ -4,7 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     pass
-
+    watchlist = models.ManyToManyField(Listing, blank=True, related_name='watchers')
 
 class Listing(models.Model):
     title = models.CharField(max_length=64) 
@@ -12,3 +12,4 @@ class Listing(models.Model):
     current_bid = models.FloatField()
     image_url = models.URLField(blank=True)
     category = models.CharField(max_length=64, blank=True)
+    seller = models.IntegerField()

@@ -9,8 +9,10 @@ from .forms import ListingForm
 
 
 def index(request):
-    listings = Listing.objects.all()
-    ordered = sorted(listings, key=operator.attrgetter('pk'))
+    listings = Listing.objects.all().order_by('-pk')
+    
+
+    
     return render(request, "auctions/index.html", {
         'listings': listings
     })
@@ -83,7 +85,7 @@ def create(request):
         category = form['category'].value()
         # create new Listin object and save
         listing = Listing(title=title, description=description,
-                            current_bid=bid, image_url=image, category=category)
+                            current_bid=bid, image_url=image, category=category, seller=request.user.id)
         listing.save()
         return HttpResponseRedirect(reverse('index'))
 
@@ -91,3 +93,16 @@ def create(request):
     return render(request, 'auctions/create.html', {
         'form': ListingForm()
     })
+
+
+
+def listing(request, listing_id):
+    listing = Listing.objects.filter(pk=listing_id).first()
+    if not listing:
+        return HttpResponseRedirect(reverse('index'))    
+
+
+    return render(request, 'auctions/listing.html', {
+        'listing': listing
+    })
+
