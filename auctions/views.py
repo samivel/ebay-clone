@@ -100,9 +100,40 @@ def listing(request, listing_id):
     listing = Listing.objects.filter(pk=listing_id).first()
     if not listing:
         return HttpResponseRedirect(reverse('index'))    
-
+    if listing in Listing.objects.filter(watchers=request.user.id):
+        inlist = True
+    else:
+        inlist = False
 
     return render(request, 'auctions/listing.html', {
-        'listing': listing
+        'listing': listing,
+        'inlist': inlist
     })
 
+# Adds item to watchlist and redirects
+def watch(request, listing_id):
+    if request.method == 'POST':
+        listing = Listing.objects.get(pk=listing_id)
+        request.user.watchlist.add(listing)
+
+        return HttpResponseRedirect(reverse('watchlist'))
+
+
+
+def unwatch(request, listing_id):
+    if request.method == 'POST':
+        listing = Listing.objects.get(pk=listing_id)
+        request.user.watchlist.remove(listing)
+
+        return HttpResponseRedirect(reverse('watchlist'))
+
+
+
+
+
+
+def watchlist(request):
+    watched = Listing.objects.filter(watchers=request.user.id)
+    return render(request, 'auctions/watchlist.html', {
+        'watched': watched
+    })

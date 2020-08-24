@@ -1,11 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
-class User(AbstractUser):
-    pass
-    watchlist = models.ManyToManyField(Listing, blank=True, related_name='watchers')
-
 class Listing(models.Model):
     title = models.CharField(max_length=64) 
     description = models.TextField()
@@ -13,3 +8,11 @@ class Listing(models.Model):
     image_url = models.URLField(blank=True)
     category = models.CharField(max_length=64, blank=True)
     seller = models.IntegerField()
+
+    def __str__(self):
+        return f'Listing: {self.title}'
+
+
+
+class User(AbstractUser):
+    watchlist = models.ManyToManyField(Listing, blank=True, related_name='watchers')

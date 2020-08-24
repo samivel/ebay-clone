@@ -9,7 +9,7 @@
             <div class="card mb-3" style="max-height: 800px;">
                 <div class="row no-gutters">
                     <div>
-                    <img src="{{ listing.image_url }}" class="card-img" alt="Image of Listing" style="max-height: 800px; width:auto">
+                    <img src="{{ listing.image_url }}" class="card-img" alt="Image of Listing" style="max-width: 500px; height:auto">
                     </div>
                     <div class="col">
                     <div class="card-body">
@@ -17,8 +17,23 @@
                         <h4 class="mt-5">Current Bid: <span class="badge badge-info">${{ listing.current_bid|floatformat:2 }}</span></h4>
                         <h5 class="mt-5">Description:</h5>
                         <p class="card-text ml-5">{{ listing.description }}</p>
+                        <h6 class="card-text">Category: {{ listing.category }}</h6>
                         <br><br>
-                        <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View Listing</a>
+                        {% if user.is_authenticated %}
+                        {% if inlist == True %}
+                            <form action="{% url 'unwatch' listing.id %}" method="POST">
+                                {% csrf_token %}
+                                
+                                <input type="submit" class="btn btn-warning" value="Un-watch">
+                            </form>
+                        {% else %}
+                        <form action="{% url 'watch' listing.id %}" method="POST">
+                            {% csrf_token %}
+                            
+                            <input type="submit" class="btn btn-warning" value="Watch This Item">
+                        </form>
+                        {% endif %}
+                        {% endif %}
                     </div>
                     </div>
                 </div>
