@@ -6,12 +6,12 @@
 
     <div class="container">
 
-        <h2>Watchlist for: {{ request.user.first_name }}</h2>
+        <h2 class="mb-3">Watchlist for: {{ request.user.first_name }}</h2>
         {% for listing in watched %}
-            <div class="card mb-3" style="max-height: 300px;">
+            <div class="card mb-3">
                 <div class="row no-gutters">
                     <div>
-                    <img src="{{ listing.image_url }}" class="card-img" alt="Image of Listing" style="max-height: 300px; width:auto">
+                    <img src="{{ listing.image_url }}" class="card-img" alt="Image of Listing" style="max-width: 300px; height:auto">
                     </div>
                     <div class="col">
                     <div class="card-body">

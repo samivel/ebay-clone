@@ -26,3 +26,8 @@ class ListingForm(forms.Form):
         widget=forms.RadioSelect,
         choices=CATEGORIES,
     )
+
+
+
+class BidForm(forms.Form):
+    bid = forms.FloatField(label='Bid')

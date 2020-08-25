@@ -16,3 +16,8 @@ class Listing(models.Model):
 
 class User(AbstractUser):
     watchlist = models.ManyToManyField(Listing, blank=True, related_name='watchers')
+
+
+class Bid(models.Model):
+    current_bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name='current_bidder')
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='current_bidder')

@@ -4,9 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 import operator
-from .models import User, Listing
-from .forms import ListingForm
-
+from .models import User, Listing, Bid
+from .forms import ListingForm, BidForm 
 
 def index(request):
     listings = Listing.objects.all().order_by('-pk')
@@ -107,7 +106,8 @@ def listing(request, listing_id):
 
     return render(request, 'auctions/listing.html', {
         'listing': listing,
-        'inlist': inlist
+        'inlist': inlist,
+        'form': BidForm()
     })
 
 # Adds item to watchlist and redirects
@@ -137,3 +137,22 @@ def watchlist(request):
     return render(request, 'auctions/watchlist.html', {
         'watched': watched
     })
+
+
+def bid(request, listing_id):
+    if request.method == 'POST':
+        form = BidForm(request.POST)
+        bid = float(form['bid'].value())
+        listing = Listing.objects.get(pk=listing_id)
+        # Ensure bid is larger than current bid
+        if listing.current_bid > bid:
+            return render(request, 'auctions/error.html')
+
+        listing.current_bid = bid
+        listing.save()
+
+        record = Bid(current_bidder=request.user, listing=listing)
+        record.save()
+
+        return HttpResponseRedirect(reverse('index'))
+

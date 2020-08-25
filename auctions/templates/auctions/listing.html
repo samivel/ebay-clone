@@ -5,7 +5,6 @@
 
 
     <div class="container">
-      
             <div class="card mb-3" style="max-height: 800px;">
                 <div class="row no-gutters">
                     <div>
@@ -21,6 +20,11 @@
                         <br><br>
                         {% if user.is_authenticated %}
                         {% if inlist == True %}
+                            <form action="{% url 'bid' listing.id %}" class="mb-3" method="POST">
+                                {% csrf_token %}
+                                $ {{ form.bid }}
+                                <input type="submit" class="btn btn-warning" value="Bid">
+                            </form>
                             <form action="{% url 'unwatch' listing.id %}" method="POST">
                                 {% csrf_token %}
                                 
