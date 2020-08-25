@@ -1,0 +1,44 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<div class="container">
+    <ul>
+        <li><a href="../category/home">Home</a></li>
+        <li><a href="../category/fashion">Fashion</a></li>
+        <li><a href="../category/books">Books</a></li>
+        <li><a href="../category/business">Business</a></li>
+        <li><a href="../category/crafts">Crafts</a></li>
+        <li><a href="../category/pets">Pet Supplies</a></li>
+        <li><a href="../category/other">Other</a></li>
+    </ul>
+</div>
+
+
+
+<div class="container">
+
+    <h2>Active Listings: {{ title }}</h2>
+    {% for listing in listings %}
+        <div style="float: left;" class="card mb-3"> 
+            <div class="row no-gutters">
+                <div>
+                <img src="{{ listing.image_url }}" class="card-img" alt="Image of Listing" style="max-width: 300px; height:auto">
+                </div>
+                <div class="col">
+                <div class="card-body">
+                    <h4 class="card-title">{{ listing.title }}</h4>
+                    <h5>Current Bid: <span class="badge badge-success">${{ listing.current_bid|floatformat:2 }}</span></h5>
+                    <p class="card-text">{{ listing.description }}</p>
+                    <br><br>
+                    <a href="{% url 'listing' listing.id %}" class="btn btn-primary stretched-link">View Listing</a>
+                </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+        
+    
+
+</div>
+{% endblock %}

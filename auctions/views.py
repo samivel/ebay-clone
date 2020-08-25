@@ -182,3 +182,22 @@ def comment(request, listing_id):
         comment = Comment(user=request.user, listing=listing, content=content)
         comment.save()
         return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
+
+
+def category(request, category):
+    
+
+    
+    if category == 'all':
+        listings = Listing.objects.all().order_by('-pk')
+    if category == 'pets':
+        listings = Listing.objects.filter(category='pet supplies').all()
+    else:
+        listings = Listing.objects.filter(category=category).all()
+
+    title = category.capitalize()
+
+    return render(request, 'auctions/category.html', {
+        'listings': listings,
+        'title': title
+    })
