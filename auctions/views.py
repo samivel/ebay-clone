@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 import operator
-from .models import User, Listing, Bid
+from .models import User, Listing, Bid, Comment
 from .forms import ListingForm, BidForm 
 
 def index(request):
@@ -96,8 +96,10 @@ def create(request):
 
 
 def listing(request, listing_id):
+    
     listing = Listing.objects.filter(pk=listing_id).first()
     current = Bid.objects.filter(listing=listing).first()
+    comments = Comment.objects.filter(listing=listing).all().order_by('-pk')
     if not listing:
         return HttpResponseRedirect(reverse('index'))    
     if listing in Listing.objects.filter(watchers=request.user.id):
@@ -109,8 +111,12 @@ def listing(request, listing_id):
         'listing': listing,
         'inlist': inlist,
         'form': BidForm(),
-        'current': current
+        'current': current,
+        'comments': comments
     })
+
+
+
 
 # Adds item to watchlist and redirects
 def watch(request, listing_id):
@@ -121,7 +127,7 @@ def watch(request, listing_id):
         return HttpResponseRedirect(reverse('watchlist'))
 
 
-
+# Removes item from watchlist
 def unwatch(request, listing_id):
     if request.method == 'POST':
         listing = Listing.objects.get(pk=listing_id)
@@ -133,14 +139,14 @@ def unwatch(request, listing_id):
 
 
 
-
+# Renders users watchlist
 def watchlist(request):
     watched = Listing.objects.filter(watchers=request.user.id)
     return render(request, 'auctions/watchlist.html', {
         'watched': watched
     })
 
-
+# Registers a bid and applies the appropriate changes to db
 def bid(request, listing_id):
     if request.method == 'POST':
         form = BidForm(request.POST)
@@ -156,12 +162,23 @@ def bid(request, listing_id):
         record = Bid(current_bidder=request.user, listing=listing)
         record.save()
 
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
 
+
+# Allows user who created listing to close it.
 def close(request, listing_id):
     if request.method == 'POST':
         listing = Listing.objects.get(pk=listing_id)
         listing.closed = True
        
         listing.save()
+        return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
+
+
+def comment(request, listing_id):
+    if request.method == 'POST':
+        content = request.POST['content']
+        listing = Listing.objects.get(pk=listing_id)
+        comment = Comment(user=request.user, listing=listing, content=content)
+        comment.save()
         return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))

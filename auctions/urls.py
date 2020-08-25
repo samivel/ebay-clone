@@ -13,5 +13,6 @@ urlpatterns = [
     path('unwatch/<int:listing_id>', views.unwatch, name='unwatch'),
     path('watchlist', views.watchlist, name='watchlist'),
     path('bid/<int:listing_id>', views.bid, name='bid'),
-    path('close/<int:listing_id>', views.close, name='close')
+    path('close/<int:listing_id>', views.close, name='close'),
+    path('comment/<int:listing_id>', views.comment, name='comment')
     ]

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from datetime import datetime
 class Listing(models.Model):
     title = models.CharField(max_length=64) 
     description = models.TextField()
@@ -22,3 +22,10 @@ class User(AbstractUser):
 class Bid(models.Model):
     current_bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name='current_bidder')
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='current_bidder')
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField()
+    datetime = models.DateTimeField(default=datetime.now(), blank=True)

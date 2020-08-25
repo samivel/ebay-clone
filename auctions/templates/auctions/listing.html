@@ -7,14 +7,14 @@
             <div class="card mb-3" style="max-height: 800px;">
 
                 {% if listing.closed == True and user.id == current.current_bidder.id %}
-                <div class="alert alert-success" role="alert">
-                    You won this itme!! Congratulations
-                </div>
+                    <div class="alert alert-success" role="alert">
+                        You won this itme!! Congratulations
+                    </div>
                 {% elif listing.closed == True and user.id != current.current_bidder.id %}
-                <div class="alert alert-danger" role="alert">
-                    Auction closed. Better luck next time!
-                </div>
-               {% endif %}
+                    <div class="alert alert-danger" role="alert">
+                        Auction closed. Better luck next time!
+                    </div>
+                {% endif %}
 
 
 
@@ -27,6 +27,9 @@
                     <div class="card-body">
                         <h1 class="card-title text-center">{{ listing.title }}</h1>
                         <h4 class="mt-5">Current Bid: <span class="badge badge-info">${{ listing.current_bid|floatformat:2 }}</span></h4>
+                        {% if current.current_bidder.id == user.id %}
+                        <p class="small">You are the highest bidder</p>
+                        {% endif %}
                         <h5 class="mt-5">Description:</h5>
                         <p class="card-text ml-5">{{ listing.description }}</p>
                         <h6 class="card-text">Category: {{ listing.category }}</h6>
@@ -35,12 +38,12 @@
                             <h1><span class="badge badge-danger">Auction Closed</span></h1>
                         {% else %}
                             {% if user.is_authenticated %}
-                                {% if inlist == True %}
                                     <form action="{% url 'bid' listing.id %}" class="mb-3" method="POST">
                                         {% csrf_token %}
                                         $ {{ form.bid }}
                                         <input type="submit" class="btn btn-warning" value="Bid">
                                     </form>
+                                {% if inlist == True %}
                                     <form action="{% url 'unwatch' listing.id %}" method="POST">
                                         {% csrf_token %}
                                         
@@ -60,17 +63,36 @@
                                         <input type="submit" class="btn btn-danger" value="Close Auction">
                                     </form>
                                 {% endif %}
-
                             {% endif %}
                         {% endif %}
                     </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            
-        
-    
-    </div>
 
+
+        <div class="container">
+            <div class="card mt-10">
+                <h5 class="card-header">Comments</h5>
+                    <div class="card-body">
+                        <h5 class="card-title">Write Comment Below:</h5>
+                        <form class="border-bottom mb-4" action="{% url 'comment' listing.id %}" method="POST">
+                            {% csrf_token %}
+                            <textarea class="form-control" name="content" rows="3"></textarea>
+                            <input type="submit" value="Submit" class="btn btn-primary mt-3 mb-3">
+                        </form>
+                        {% for comment in comments %}
+                            <h5 class="card-title" style="">{{ comment.user.username }}</h5>
+                            <p class="small">{{ comment.datetime }}</p>
+                            <div class="p-3 m-3 border">{{ comment.content }}</div>
+                        {% empty %}
+                        <h5 class="card-title" style="text-decoration: underline;">No Comments<h5>
+
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
 {% endblock %}
