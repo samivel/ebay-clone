@@ -3,10 +3,23 @@
 
 
 
-
     <div class="container">
             <div class="card mb-3" style="max-height: 800px;">
+
+                {% if listing.closed == True and user.id == current.current_bidder.id %}
+                <div class="alert alert-success" role="alert">
+                    You won this itme!! Congratulations
+                </div>
+                {% elif listing.closed == True and user.id != current.current_bidder.id %}
+                <div class="alert alert-danger" role="alert">
+                    Auction closed. Better luck next time!
+                </div>
+               {% endif %}
+
+
+
                 <div class="row no-gutters">
+                    
                     <div>
                     <img src="{{ listing.image_url }}" class="card-img" alt="Image of Listing" style="max-width: 500px; height:auto">
                     </div>
@@ -18,25 +31,37 @@
                         <p class="card-text ml-5">{{ listing.description }}</p>
                         <h6 class="card-text">Category: {{ listing.category }}</h6>
                         <br><br>
-                        {% if user.is_authenticated %}
-                        {% if inlist == True %}
-                            <form action="{% url 'bid' listing.id %}" class="mb-3" method="POST">
-                                {% csrf_token %}
-                                $ {{ form.bid }}
-                                <input type="submit" class="btn btn-warning" value="Bid">
-                            </form>
-                            <form action="{% url 'unwatch' listing.id %}" method="POST">
-                                {% csrf_token %}
-                                
-                                <input type="submit" class="btn btn-warning" value="Un-watch">
-                            </form>
+                        {% if listing.closed == True %}
+                            <h1><span class="badge badge-danger">Auction Closed</span></h1>
                         {% else %}
-                        <form action="{% url 'watch' listing.id %}" method="POST">
-                            {% csrf_token %}
-                            
-                            <input type="submit" class="btn btn-warning" value="Watch This Item">
-                        </form>
-                        {% endif %}
+                            {% if user.is_authenticated %}
+                                {% if inlist == True %}
+                                    <form action="{% url 'bid' listing.id %}" class="mb-3" method="POST">
+                                        {% csrf_token %}
+                                        $ {{ form.bid }}
+                                        <input type="submit" class="btn btn-warning" value="Bid">
+                                    </form>
+                                    <form action="{% url 'unwatch' listing.id %}" method="POST">
+                                        {% csrf_token %}
+                                        
+                                        <input type="submit" class="btn btn-warning" value="Un-watch">
+                                    </form>
+                                {% else %}
+                                    <form action="{% url 'watch' listing.id %}" method="POST">
+                                        {% csrf_token %}
+                                        
+                                        <input type="submit" class="btn btn-warning" value="Watch This Item">
+                                    </form>
+                                {% endif %}
+                                {% if user.id == listing.seller %}
+                                    <form class="mt-3" action="{% url 'close' listing.id %}" method="POST">
+                                        {% csrf_token %}
+                                        
+                                        <input type="submit" class="btn btn-danger" value="Close Auction">
+                                    </form>
+                                {% endif %}
+
+                            {% endif %}
                         {% endif %}
                     </div>
                     </div>

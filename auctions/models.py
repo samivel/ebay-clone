@@ -6,8 +6,9 @@ class Listing(models.Model):
     description = models.TextField()
     current_bid = models.FloatField()
     image_url = models.URLField(blank=True)
-    category = models.CharField(max_length=64, blank=True)
+    category = models.CharField(max_length=64, null=True)
     seller = models.IntegerField()
+    closed = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Listing: {self.title}'

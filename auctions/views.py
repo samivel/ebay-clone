@@ -97,6 +97,7 @@ def create(request):
 
 def listing(request, listing_id):
     listing = Listing.objects.filter(pk=listing_id).first()
+    current = Bid.objects.filter(listing=listing).first()
     if not listing:
         return HttpResponseRedirect(reverse('index'))    
     if listing in Listing.objects.filter(watchers=request.user.id):
@@ -107,7 +108,8 @@ def listing(request, listing_id):
     return render(request, 'auctions/listing.html', {
         'listing': listing,
         'inlist': inlist,
-        'form': BidForm()
+        'form': BidForm(),
+        'current': current
     })
 
 # Adds item to watchlist and redirects
@@ -156,3 +158,10 @@ def bid(request, listing_id):
 
         return HttpResponseRedirect(reverse('index'))
 
+def close(request, listing_id):
+    if request.method == 'POST':
+        listing = Listing.objects.get(pk=listing_id)
+        listing.closed = True
+       
+        listing.save()
+        return HttpResponseRedirect(reverse('listing', kwargs={'listing_id': listing_id}))
